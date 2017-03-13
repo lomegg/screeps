@@ -18,6 +18,7 @@ var roleBuilder = {
                 creep.memory.sideJobCounter += 1;
             } else if (creep.carry.energy == 0){
                 creep.memory.sideJobCounter = 0;
+                creep.memory.building = false;
                 roleChanger(creep);
             }
         }
@@ -39,13 +40,18 @@ var roleBuilder = {
                     creep.moveTo(targets[0], {visualizePathStyle: {stroke: '#ffffff'}});
                 }
             } else {
+                creep.memory.building = false;
                 roleChanger(creep);
             }
         }
         else {
             var sources = creep.room.find(FIND_SOURCES);
-            if(creep.harvest(Game.getObjectById(creep.memory.sourceId)) == ERR_NOT_IN_RANGE) {
+            var harvest_result = creep.harvest(Game.getObjectById(creep.memory.sourceId));
+            if(harvest_result == ERR_NOT_IN_RANGE) {
                 creep.moveTo(Game.getObjectById(creep.memory.sourceId), {visualizePathStyle: {stroke: '#ffaa00'}});
+            } else if (harvest_result == ERR_NOT_ENOUGH_RESOURCES && creep.carry.energy > 0){
+                creep.memory.building = true;
+                creep.say('"build"');
             }
         }
     }
