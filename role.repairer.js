@@ -12,7 +12,7 @@ var roleRepairer = {
 
         // deal with side job
         if (creep.memory.role != creep.memory.currentRole){
-            if (typeof creep.memory.sideJobCounter == undefined ){
+            if (typeof creep.memory.sideJobCounter == 'undefined' ){
                 creep.memory.sideJobCounter = 0;
             } else if (creep.memory.sideJobCounter < 50){
                 creep.memory.sideJobCounter += 1;
