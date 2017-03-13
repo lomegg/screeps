@@ -52,6 +52,8 @@ function findAndHeal(creep, hitLevel){
             findAndHeal(creep, hitLevel+0.1);
         } else {
             // store energy
+            creep.say('drop all');
+            creep.storeEnergy();
         }
     }
 }
