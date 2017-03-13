@@ -4,7 +4,8 @@
 
 module.exports = function(creep){
 
-    var sources = Game.spawns['Spawn1'].room.find(FIND_SOURCES);
+    var spawn = Game.spawns['Spawn1'];
+    var sources = spawn.room.find(FIND_SOURCES);
     var sourceSpots = [4, 3],
         sourcesMap = [];
 
@@ -16,10 +17,10 @@ module.exports = function(creep){
             source: source,
             spots: sourceSpots[index],
             users: _.filter(Game.creeps, (creep) => creep.memory.sourceId == source.id).length,
-            spawnDistance: source.pos.findPathTo(Game.spawns['Spawn1']).length
+            spawnDistance: source.pos.findPathTo(spawn).length
         };
 
-        console.log('users', sourcesMap[index].users, 'spawnDistance', sourcesMap[index].spawnDistance, 'spots', sourcesMap[index].spots)
+        console.log('users', sourcesMap[index].users, 'spawnDistance', sourcesMap[index].spawnDistance, 'spots', sourcesMap[index].spots);
 
         sourcesMap[index].rating = sourcesMap[index].users * -10 + sourcesMap[index].spawnDistance + sourcesMap[index].spots * 9;
         console.log ('Rating for Source ' + sourcesMap[index].source.id + ' is ' + sourcesMap[index].rating);
