@@ -8,7 +8,7 @@ module.exports = function(){
     var sortedCreeps = {
         bigHarvesters: {
             qty: creepsQty.bigHarvesters,
-            targetQty: 3,
+            targetQty: 0,
             parts: [WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE],
             cost: 500
         },
@@ -20,21 +20,27 @@ module.exports = function(){
         },
         upgraders: {
             qty: creepsQty.upgraders,
-            targetQty: 15,
+            targetQty: 6,
             parts: [WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE],
             cost: 500
         },
         builders: {
             qty: creepsQty.builders,
-            targetQty: 8,
+            targetQty: 6,
             parts: [WORK,WORK,WORK,CARRY,MOVE],
             cost: 400
+        },
+        healers: {
+            qty: creepsQty.healers,
+            targetQty: 1,
+            parts: [WORK,HEAL,CARRY,MOVE],
+            cost: 450
         }
     };
 
     //console.log('Harvesters:', sortedCreeps.harvesters.qty, ', Builders:', sortedCreeps.builders.qty, ', Upgraders:', sortedCreeps.upgraders.qty);
 
-    for (let type of ['harvester', 'upgrader', 'builder', 'bigHarvester'] ){
+    for (let type of ['healer', 'harvester', 'upgrader', 'builder', 'bigHarvester'] ){
         var creepType = sortedCreeps[type + 's'];
         if (creepType.qty < creepType.targetQty && !mainSpawn.spawning) {
 
@@ -67,7 +73,7 @@ module.exports = function(){
 
                 break;
             } else {
-                console.log(_.capitalize(type), 'required but only', energyAvailable, 'of ' + creepType.cost + ' present');
+                console.log(_.capitalize(type), 'required(' + creepType.qty + ' of ' + creepType.targetQty + ') but only', energyAvailable, 'of ' + creepType.cost + ' present');
             }
         } else if (mainSpawn.spawning){
             break;
