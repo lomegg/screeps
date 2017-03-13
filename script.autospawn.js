@@ -10,7 +10,7 @@ module.exports = function(){
         },
         harvesters: {
             qty: Memory.screepsQty.harvesters,
-            targetQty: 9,
+            targetQty: 6,
             parts: [WORK,WORK,CARRY,MOVE]
         },
         upgraders: {
