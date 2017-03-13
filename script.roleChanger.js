@@ -32,7 +32,9 @@ var selectRole = function(creep){
             break;
         case 'builder':
             if (!buildersNeeded(creep.room)){
-                if (upgradersNeeded()){
+                if (repairersNeeded()){
+                    setRole(creep, 'repairer');
+                } else if (upgradersNeeded()){
                     setRole(creep, 'builder');
                 } else if (harvestersNeeded(creep.room)){
                     setRole(creep, 'harvester');
@@ -51,6 +53,10 @@ var buildersNeeded = function(room){
     return room.find(FIND_CONSTRUCTION_SITES).length;
 };
 
+var repairersNeeded = function(){
+    return _.filter(Game.creeps, (creep) => creep.memory.currentRole == 'repairer').length < 7;
+};
+
 var upgradersNeeded = function(){
     return _.filter(Game.creeps, (creep) => creep.memory.currentRole == 'upgrader').length < 7;
 };
@@ -67,13 +73,12 @@ var harvestersNeeded = function(room){
 };
 
 var setDefaultRole = function(creep){
+    creep.say(creep.memory.currentRole.charAt(0) + ' ⥹ ' + creep.memory.role.charAt(0));
     creep.memory.currentRole = creep.memory.role;
-    creep.say('Default role');
-    console.log('roleChanger: unset for role', creep.memory.role);
 };
 
 var setRole = function(creep, role){
-    creep.say('Gone ' + role);
+    creep.say(creep.memory.role.charAt(0) + ' → ' + role.charAt(0));
     creep.memory.currentRole = role;
 };
 
