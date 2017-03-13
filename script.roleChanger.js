@@ -37,7 +37,7 @@ var selectRole = function(creep){
                 if (repairersNeeded(creep.room)){
                     setRole(creep, 'repairer');
                 } else if (upgradersNeeded()){
-                    setRole(creep, 'builder');
+                    setRole(creep, 'upgrader');
                 } else if (harvestersNeeded(creep.room)){
                     setRole(creep, 'harvester');
                 } else {
@@ -62,7 +62,7 @@ var repairersNeeded = function(room){
 };
 
 var upgradersNeeded = function(){
-    return _.filter(Game.creeps, (creep) => creep.memory.currentRole == 'upgrader').length < 7;
+    return _.filter(Game.creeps, (creep) => creep.memory.currentRole == 'upgrader').length < 15;
 };
 
 var harvestersNeeded = function(room){
@@ -70,7 +70,9 @@ var harvestersNeeded = function(room){
         filter: (structure) => {
             return (structure.structureType == STRUCTURE_EXTENSION ||
                 structure.structureType == STRUCTURE_SPAWN ||
-                structure.structureType == STRUCTURE_TOWER) &&
+                structure.structureType == STRUCTURE_TOWER ||
+                structure.structureType == STRUCTURE_CONTAINER
+                ) &&
                 structure.energy < structure.energyCapacity;
         }
     }).length;
