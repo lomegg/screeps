@@ -62,7 +62,7 @@ var repairersNeeded = function(room){
 };
 
 var upgradersNeeded = function(){
-    return _.filter(Game.creeps, (creep) => creep.memory.currentRole == 'upgrader').length < 15;
+    return _.filter(Game.creeps, (creep) => creep.memory.currentRole == 'upgrader').length < 10;
 };
 
 var harvestersNeeded = function(room){
