@@ -1,59 +1,44 @@
-// autospawning script
+var roleHarvester = require('role.harvester');
+var roleUpgrader = require('role.upgrader');
+var roleBuilder = require('role.builder');
+var roleRepairer = require('role.builder');
+var roleTower = require('role.tower');
+require ('script.creepCounter')();
+var autospawn = require('script.autospawn');
 
-module.exports = function(){
+module.exports.loop = function () {
 
-    var sortedCreeps = {
-        bigHarvesters: {
-            qty: Memory.screepsQty.bigHarvesters,
-            targetQty: 0,
-            parts: [WORK,WORK,CARRY,MOVE]
-        },
-        harvesters: {
-            qty: Memory.screepsQty.harvesters,
-            targetQty: 9,
-            parts: [WORK,WORK,CARRY,CARRY,MOVE]
-        },
-        upgraders: {
-            qty: Memory.screepsQty.upgraders,
-            targetQty: 8,
-            parts: [WORK,WORK,WORK,CARRY,MOVE]
-        },
-        builders: {
-            qty: Memory.screepsQty.builders,
-            targetQty: 8,
-            parts: [WORK,WORK,WORK,CARRY,MOVE]
+    autospawn();
+
+    for(let name in Memory.creeps) {
+        if(!Game.creeps[name]) {
+            delete Memory.creeps[name];
+            console.log('Clearing non-existing creep memory:', name);
         }
-    };
+    }
 
-    var mainSpawn = Game.spawns['Spawn1'];
+    var tower = Game.getObjectById('6d5765b2c59ab3c616cdae8c');
+    if(tower) {
+        roleTower.run(tower);
+    }
 
-    //console.log('Harvesters:', sortedCreeps.harvesters.qty, ', Builders:', sortedCreeps.builders.qty, ', Upgraders:', sortedCreeps.upgraders.qty);
+    for(let name in Game.creeps) {
+        var creep = Game.creeps[name];
+        switch (creep.memory.currentRole){
+            case 'upgrader':
+                roleUpgrader.run(creep);
+                break;
+            case 'builder':
+                roleBuilder.run(creep);
+                break;
+            case 'repairer':
+                roleRepairer.run(creep);
+                break;
 
-    for (let type of ['harvester', 'upgrader', 'builder', 'bigHarvester'] ){
-        var creepType = sortedCreeps[type + 's'];
-        if (creepType.qty < creepType.targetQty && !mainSpawn.spawning) {
-
-            console.log('Attempting to create', _.capitalize(type) + (creepType.qty + 1));
-
-            var newName = mainSpawn.createCreep(creepType.parts, _.capitalize(type) + (creepType.qty + 1) , {role: type, currentRole: type});
-            if (newName == ERR_NOT_ENOUGH_ENERGY){
-                console.log('Not enough energy to spawn:', mainSpawn.energy);
-            } else if (newName == ERR_NAME_EXISTS){
-                // looping to find & replace dead creep in the middle of chain
-                for (let i = 1; i < creepType.qty; i ++){
-                    if (!Game.creeps[_.capitalize(type) + i]){
-                        return newName =mainSpawn.createCreep(creepType.parts, _.capitalize(type) + i , {role: type, currentRole: type});
-                    }
-                }
-            } else {
-                Memory.screepsQty[type + 's'] += 1;
-                console.log('Spawning new', type, ': ' + newName);
-            }
-
-            break;
-        } else if (mainSpawn.spawning){
-            console.log('Spawn1 is spawning', mainSpawn.spawning.name, 'already');
-            break;
+            case 'harvester':
+            case 'bigHarvester':
+            default:
+                roleHarvester.run(creep);
         }
     }
 };
