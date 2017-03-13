@@ -24,46 +24,26 @@ var roleHarvester = {
         }
 
         if(creep.carry.energy < creep.carryCapacity && !creep.memory.unloading) {
+
+            // harvest
             var harvest_result = creep.harvest(Game.getObjectById(creep.memory.sourceId));
 
             if(harvest_result == ERR_NOT_IN_RANGE) {
                 creep.moveTo(Game.getObjectById(creep.memory.sourceId), {visualizePathStyle: {stroke: '#ffaa00'}});
             } else if (harvest_result == ERR_NOT_ENOUGH_RESOURCES && creep.carry.energy > 0){
-                creep.say('"unload"');
+
+                creep.say('drop rest');
+                creep.storeEnergy();
             }
         }
-        else {
-            var target = findUnloadTarget(creep);
-            if(target) {
-                //console.log('Target for', creep.name, targets[0]);
-                if(creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
-                } else if (creep.carry.energy > 0){
-                    creep.memory.unloading = true;
-                } else {
-                    creep.memory.unloading = false;
-                }
-            } else {
-                console.log('No target for harvester', creep.name);
-                creep.say('No storage');
-                creep.memory.unloading = false;
-                roleChanger(creep);
-            }
+        else if (creep.carry.energy > 0){
+            // unload
+            creep.say('drop all');
+            creep.storeEnergy();
+        } else {
+            creep.memory.unloading = false;
         }
     }
 };
-
-function findUnloadTarget(creep){
-    var targets = creep.room.find(FIND_STRUCTURES, {
-        filter: (structure) => {
-            return (structure.structureType == STRUCTURE_EXTENSION ||
-                structure.structureType == STRUCTURE_SPAWN ||
-                structure.structureType == STRUCTURE_TOWER ||
-                structure.structureType == STRUCTURE_CONTAINER) &&
-                structure.energy < structure.energyCapacity;
-        }
-    });
-    if(targets.length > 0) { return  targets[0];}
-}
 
 module.exports = roleHarvester;
