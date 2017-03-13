@@ -19,7 +19,6 @@ var roleUpgrader = {
             } else if (creep.memory.sideJobCounter < 20){
                 creep.memory.sideJobCounter += 1;
             } else if (creep.carry.energy == 0){
-                creep.memory.upgrading = false;
                 creep.memory.sideJobCounter = 0;
                 roleChanger(creep);
             }

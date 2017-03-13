@@ -20,6 +20,7 @@ var selectRole = function(creep){
             } else {setDefaultRole(creep);}
             break;
         case 'upgrader':
+            creep.memory.upgrading = false;
             if (!upgradersNeeded()){
                 if (buildersNeeded(creep.room)){
                     setRole(creep, 'builder');
@@ -31,8 +32,9 @@ var selectRole = function(creep){
             } else {setDefaultRole(creep);}
             break;
         case 'builder':
+            creep.memory.building = false;
             if (!buildersNeeded(creep.room)){
-                if (repairersNeeded()){
+                if (repairersNeeded(creep.room)){
                     setRole(creep, 'repairer');
                 } else if (upgradersNeeded()){
                     setRole(creep, 'builder');
@@ -53,8 +55,10 @@ var buildersNeeded = function(room){
     return room.find(FIND_CONSTRUCTION_SITES).length;
 };
 
-var repairersNeeded = function(){
-    return _.filter(Game.creeps, (creep) => creep.memory.currentRole == 'repairer').length < 7;
+var repairersNeeded = function(room){
+    return room.find(FIND_STRUCTURES, {
+        filter: object => object.hits < (object.hitsMax*0.6)
+    }).length;
 };
 
 var upgradersNeeded = function(){

@@ -35,7 +35,7 @@ var roleRepairer = {
 
         if(creep.memory.repairing) {
             var targets = creep.room.find(FIND_STRUCTURES, {
-                filter: object => object.hits < (object.hitsMax/2)
+                filter: object => object.hits < (object.hitsMax*0.6)
             });
             if(targets.length) {
                 if(creep.repair(targets[0]) == ERR_NOT_IN_RANGE) {
@@ -54,4 +54,4 @@ var roleRepairer = {
     }
 };
 
-module.exports = roleBuilder;
+module.exports = roleRepairer;
