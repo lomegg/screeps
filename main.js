@@ -4,7 +4,6 @@ var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 var roleRepairer = require('role.repairer');
 var roleTower = require('role.tower');
-require ('script.creepCounter')();
 var autospawn = require('script.autospawn');
 
 module.exports.loop = function () {
