@@ -5,13 +5,13 @@ module.exports = function(){
     var sortedCreeps = {
         bigHarvesters: {
             qty: Memory.screepsQty.bigHarvesters,
-            targetQty: 0,
-            parts: [WORK,WORK,CARRY,MOVE]
+            targetQty: 3,
+            parts: [WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE]
         },
         harvesters: {
             qty: Memory.screepsQty.harvesters,
             targetQty: 6,
-            parts: [WORK,WORK,CARRY,MOVE]
+            parts: [WORK,WORK,CARRY,CARRY,MOVE]
         },
         upgraders: {
             qty: Memory.screepsQty.upgraders,
