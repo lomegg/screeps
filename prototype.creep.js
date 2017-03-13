@@ -34,18 +34,14 @@ Creep.prototype.findStorageTarget = function(){
 Creep.prototype.getStorageTarget = function(){
     if (this.memory.storageTargetId){
         var storageTarget = Game.getObjectById(this.memory.storageTargetId);
-        if (storageTarget.structureType != STRUCTURE_CONTAINER){
-            if (structure.energy < structure.energyCapacity){
-                return storageTarget;
-            } else {
-                storageTarget = this.findStorageTarget();
-            }
+
+        if ((storageTarget.structureType != STRUCTURE_CONTAINER) &&
+            (storageTarget.energy < storageTarget.energyCapacity)){
+            // only agree to existing storage if it's normal one and not full
+            return storageTarget;
         } else {
-            if (_.sum(storageTarget.store) < storageTarget.storeCapacity){
-                return storageTarget;
-            } else {
-                storageTarget = this.findStorageTarget();
-            }
+            // check if there's spawn/extension need of energy
+            storageTarget = this.findStorageTarget();
         }
     } else {
         storageTarget = this.findStorageTarget();
@@ -58,14 +54,16 @@ Creep.prototype.getStorageTarget = function(){
     return storageTarget;
 };
 
+
 /**
  * Store the energy into the target storage
  */
 Creep.prototype.storeEnergy = function(){
-        var target = this.getStorageTarget();
+        var target = this.findStorageTarget();
+
         if(target) {
 
-            var transfer = creep.transfer(target, RESOURCE_ENERGY);
+            var transfer = this.transfer(target, RESOURCE_ENERGY);
 
             if(transfer == ERR_NOT_IN_RANGE) {
                 return this.moveTo(target, {visualizePathStyle: {stroke: '#ffe601'}});
@@ -74,6 +72,7 @@ Creep.prototype.storeEnergy = function(){
                 return this.memory.unloading;
             }
 
+        } else {
+            console.log('No target found! Harvester', this.name, 'target', target);
         }
-
 };
