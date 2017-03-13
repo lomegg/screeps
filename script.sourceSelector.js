@@ -4,7 +4,7 @@
 
 module.exports = function(creep){
 
-    var sources = Game.creeps['Harvester1'].room.find(FIND_SOURCES);
+    var sources = Game.spawns['Spawn1'].room.find(FIND_SOURCES);
     var sourceSpots = [4, 3],
         sourcesMap = [];
 
