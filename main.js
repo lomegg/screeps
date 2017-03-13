@@ -1,8 +1,10 @@
 require ('prototype.spawn');
+require ('prototype.creep');
 var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 var roleRepairer = require('role.repairer');
+var roleHealer = require('role.healer');
 var roleTower = require('role.tower');
 var autospawn = require('script.autospawn');
 
@@ -30,6 +32,9 @@ module.exports.loop = function () {
                 break;
             case 'builder':
                 roleBuilder.run(creep);
+                break;
+            case 'healer':
+                roleHealer.run(creep);
                 break;
             case 'repairer':
                 roleRepairer.run(creep);
