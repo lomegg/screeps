@@ -16,16 +16,16 @@ var roleUpgrader = {
             }
         }
 
-        if(creep.memory.upgrading && creep.carry.energy == 0) {
-            creep.memory.upgrading = false;
+        if(creep.memory.working && creep.carry.energy == 0) {
+            creep.memory.working = false;
             creep.say('withdraw');
         }
-        if(!creep.memory.upgrading && creep.carry.energy == creep.carryCapacity) {
-            creep.memory.upgrading = true;
+        if(!creep.memory.working && creep.carry.energy == creep.carryCapacity) {
+            creep.memory.working = true;
             creep.say('⚡ upgrade');
         }
 
-        if(creep.memory.upgrading) {
+        if(creep.memory.working) {
             if(creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(creep.room.controller, {visualizePathStyle: {stroke: '#ffffff'}});
             }
@@ -33,9 +33,11 @@ var roleUpgrader = {
         else {
             if (creep.withdrawFromContainer() == ERR_NOT_FOUND){
                 if (creep.carry.energy > 0){
-                    creep.memory.upgrading = true;
+                    creep.memory.working = true;
                 } else {
-                    creep.moveTo(Game.flags.Flag1, {visualizePathStyle: {stroke: '#1313f7'}});
+                    if (roleChanger(creep) == ERR_FULL){
+                        creep.moveTo(Game.flags.Flag1, {visualizePathStyle: {stroke: '#1313f7'}});
+                    }
                 }
             }
         }

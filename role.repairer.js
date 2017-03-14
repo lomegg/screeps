@@ -11,23 +11,23 @@ var roleRepairer = {
             } else if (creep.memory.sideJobCounter < 50){
                 creep.memory.sideJobCounter += 1;
             } else if (creep.carry.energy == 0){
-                creep.memory.repairing = false;
+                creep.memory.working = false;
                 creep.memory.sideJobCounter = 0;
                 roleChanger(creep);
             }
         }
 
 
-        if(creep.memory.repairing && creep.carry.energy == 0) {
-            creep.memory.repairing = false;
+        if(creep.memory.working && creep.carry.energy == 0) {
+            creep.memory.working = false;
             creep.say('withdraw');
         }
-        if(!creep.memory.repairing && creep.carry.energy == creep.carryCapacity) {
-            creep.memory.repairing = true;
+        if(!creep.memory.working && creep.carry.energy == creep.carryCapacity) {
+            creep.memory.working = true;
             creep.say('repair');
         }
 
-        if(creep.memory.repairing) {
+        if(creep.memory.working) {
             var targets = creep.room.find(FIND_STRUCTURES, {
                 filter: object => object.hits < (object.hitsMax*0.6)
             });
@@ -42,7 +42,7 @@ var roleRepairer = {
         else {
             if (creep.withdrawFromContainer() == ERR_NOT_FOUND){
                 if (creep.carry.energy > 0){
-                    creep.memory.repairing = true;
+                    creep.memory.working = true;
                 } else {
                     creep.moveTo(Game.flags.Flag2, {visualizePathStyle: {stroke: '#1313f7'}});
                 }
