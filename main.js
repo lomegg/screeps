@@ -12,6 +12,11 @@ module.exports.loop = function () {
 
     autospawn();
 
+    for (let tower of Game.spawns.Spawn1.room.find(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_TOWER}})){
+        roleTower.run(tower);
+    }
+
+
     for(let name in Memory.creeps) {
         if(!Game.creeps[name]) {
             delete Memory.creeps[name];
