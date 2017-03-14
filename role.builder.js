@@ -45,13 +45,15 @@ var roleBuilder = {
             }
         }
         else {
-            var sources = creep.room.find(FIND_SOURCES);
-            var harvest_result = creep.harvest(Game.getObjectById(creep.memory.sourceId));
-            if(harvest_result == ERR_NOT_IN_RANGE) {
-                creep.moveTo(Game.getObjectById(creep.memory.sourceId), {visualizePathStyle: {stroke: '#ffaa00'}});
-            } else if (harvest_result == ERR_NOT_ENOUGH_RESOURCES && creep.carry.energy > 0){
-                creep.memory.building = true;
-                creep.say('"build"');
+
+            if (creep.withdrawFromContainer() == ERR_NOT_FOUND){
+                var harvest_result = creep.harvest(Game.getObjectById(creep.memory.sourceId));
+                if(harvest_result == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(Game.getObjectById(creep.memory.sourceId), {visualizePathStyle: {stroke: '#ffaa00'}});
+                } else if (harvest_result == ERR_NOT_ENOUGH_RESOURCES && creep.carry.energy > 0){
+                    creep.memory.building = true;
+                    creep.say('"build"');
+                }
             }
         }
     }

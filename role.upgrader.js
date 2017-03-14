@@ -26,7 +26,7 @@ var roleUpgrader = {
 
         if(creep.memory.upgrading && creep.carry.energy == 0) {
             creep.memory.upgrading = false;
-            creep.say('🔄 harvest');
+            creep.say('withdraw');
         }
         if(!creep.memory.upgrading && creep.carry.energy == creep.carryCapacity) {
             creep.memory.upgrading = true;
@@ -39,9 +39,17 @@ var roleUpgrader = {
             }
         }
         else {
-            var sources = creep.room.find(FIND_SOURCES);
-            if(creep.harvest(Game.getObjectById(creep.memory.sourceId)) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(Game.getObjectById(creep.memory.sourceId), {visualizePathStyle: {stroke: '#ffaa00'}});
+            if (creep.withdrawFromContainer() == ERR_NOT_FOUND){
+                var harvestResults = creep.harvest(Game.getObjectById(creep.memory.sourceId));
+                if(harvestResults == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(Game.getObjectById(creep.memory.sourceId), {visualizePathStyle: {stroke: '#ffaa00'}});
+                } else if (harvestResults == ERR_NOT_ENOUGH_RESOURCES){
+                    if (creep.carry.energy > 0){
+                        creep.memory.upgrading = true;
+                    } else {
+                        creep.selectSource();
+                    }
+                }
             }
         }
     }
