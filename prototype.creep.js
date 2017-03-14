@@ -143,7 +143,7 @@ Creep.prototype.selectSource = function(){
 /*
  * Set source for creep
  * @param {String} sourceId - Game Id of source
- * @return {Integer} response
+ * @return {Int} response
  * */
 Creep.prototype.setSource = function(sourceId){
    this.memory.sourceId = sourceId;
@@ -153,7 +153,7 @@ Creep.prototype.setSource = function(sourceId){
 
 /**
  * Store the energy into the target storage
- * @return {Integer} response
+ * @return {Int} response
  */
 Creep.prototype.storeEnergy = function(){
         var target = this.findStorageTarget();
@@ -172,7 +172,7 @@ Creep.prototype.storeEnergy = function(){
                 return transfer;
             }
         } else {
-            console.log('No target found! Harvester', this.name, 'target', target);
+            //console.log('No target found! Harvester', this.name, 'target', target);
             this.cycleSources();
             return ERR_NOT_FOUND;
         }
@@ -181,7 +181,7 @@ Creep.prototype.storeEnergy = function(){
 
 /**
  * Withdraw energy from a container
- * @return {Integer} response
+ * @return {Int} response
  */
 Creep.prototype.withdrawFromContainer = function(){
     var container = this.nearestEnergyContainer();
