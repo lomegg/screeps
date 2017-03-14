@@ -1,3 +1,23 @@
+/*
+ * Check if creep is doing someone else's job and stop it on counter
+ * @return {Int} response
+ * */
+
+Creep.prototype.checkSideJob = function(){
+    if (this.memory.role != this.memory.currentRole){
+        if (typeof this.memory.sideJobCounter  == 'undefined' ){
+            this.memory.sideJobCounter = 0;
+        } else if (this.memory.sideJobCounter < 20){
+            this.memory.sideJobCounter += 1;
+        } else if (this.carry.energy == 0){
+            this.memory.sideJobCounter = 0;
+            roleChanger(this);
+        }
+    } else {return OK;}
+};
+
+
+
 /**
  * Switch to another source if creep is being ifle for a while
  * @return {Object} Storage

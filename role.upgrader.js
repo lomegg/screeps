@@ -5,16 +5,7 @@ var roleUpgrader = {
     run: function(creep) {
 
         // deal with side job
-        if (creep.memory.role != creep.memory.currentRole){
-            if (typeof creep.memory.sideJobCounter  == 'undefined' ){
-                creep.memory.sideJobCounter = 0;
-            } else if (creep.memory.sideJobCounter < 20){
-                creep.memory.sideJobCounter += 1;
-            } else if (creep.carry.energy == 0){
-                creep.memory.sideJobCounter = 0;
-                roleChanger(creep);
-            }
-        }
+        creep.checkSideJob();
 
         if(creep.memory.working && creep.carry.energy == 0) {
             creep.memory.working = false;
