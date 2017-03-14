@@ -46,7 +46,6 @@ var roleRepairer = {
             }
         }
         else {
-            var sources = creep.room.find(FIND_SOURCES);
             if(creep.harvest(Game.getObjectById(creep.memory.sourceId)) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(Game.getObjectById(creep.memory.sourceId), {visualizePathStyle: {stroke: '#ffaa00'}});
             }
