@@ -8,25 +8,25 @@ module.exports = function(){
     var sortedCreeps = {
         bigHarvesters: {
             qty: creepsQty.bigHarvesters,
-            targetQty: 4,
+            targetQty: 6,
             parts: [WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE],
             cost: 750
         },
         harvesters: {
             qty: creepsQty.harvesters,
-            targetQty: 2,
+            targetQty: 0,
             parts: [WORK,WORK,WORK,CARRY,CARRY,MOVE],
             cost: 450
         },
         upgraders: {
             qty: creepsQty.upgraders,
-            targetQty: 6,
-            parts: [WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE],
+            targetQty: 10,
+            parts: [WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE],
             cost: 500
         },
         builders: {
             qty: creepsQty.builders,
-            targetQty: 6,
+            targetQty: 2,
             parts: [WORK,WORK,WORK,CARRY,MOVE],
             cost: 400
         },
@@ -66,7 +66,7 @@ module.exports = function(){
                     for (let i = 1; i <= creepType.qty; i ++){
                         //console.log('Checking for', _.capitalize(type) + i);
                         if (!Game.creeps[_.capitalize(type) + i]){
-                            console.log('No', _.capitalize(type) + i,'creating...');
+                            console.log('No', _.capitalize(type) + i,', creating...');
                             return newName =mainSpawn.createCreep(creepType.parts, _.capitalize(type) + i , {role: type, currentRole: type});
                         }
                     }
