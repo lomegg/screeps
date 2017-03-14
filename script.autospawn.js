@@ -8,7 +8,7 @@ module.exports = function(){
     var sortedCreeps = {
         bigHarvesters: {
             qty: creepsQty.bigHarvesters,
-            targetQty: 6,
+            targetQty: 7,
             parts: [WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE],
             cost: 750
         },
