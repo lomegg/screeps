@@ -1,16 +1,8 @@
 var roleChanger = require('script.roleChanger').selectRole;
-var sourceSelect = require('script.sourceSelector');
 var roleUpgrader = {
 
     /** @param {Creep} creep **/
     run: function(creep) {
-
-        // set favorite source
-        if (!creep.memory.sourceId){
-            sourceSelect(creep);
-        } else {
-            //sourceSelect(creep);
-        }
 
         // deal with side job
         if (creep.memory.role != creep.memory.currentRole){
@@ -40,15 +32,10 @@ var roleUpgrader = {
         }
         else {
             if (creep.withdrawFromContainer() == ERR_NOT_FOUND){
-                var harvestResults = creep.harvest(Game.getObjectById(creep.memory.sourceId));
-                if(harvestResults == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(Game.getObjectById(creep.memory.sourceId), {visualizePathStyle: {stroke: '#ffaa00'}});
-                } else if (harvestResults == ERR_NOT_ENOUGH_RESOURCES){
-                    if (creep.carry.energy > 0){
-                        creep.memory.upgrading = true;
-                    } else {
-                        creep.selectSource();
-                    }
+                if (creep.carry.energy > 0){
+                    creep.memory.upgrading = true;
+                } else {
+                    creep.moveTo(Game.flags.Flag1, {visualizePathStyle: {stroke: '#1313f7'}});
                 }
             }
         }

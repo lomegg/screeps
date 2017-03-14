@@ -1,17 +1,12 @@
-var sourceSelect = require('script.sourceSelector');
 var roleHealer = {
 
     /** @param {Creep} creep **/
     run: function(creep) {
 
-        // set favorite source
-        if (!creep.memory.sourceId){
-            sourceSelect(creep);
-        }
 
         if(creep.memory.working && creep.carry.energy == 0) {
             creep.memory.working = false;
-            creep.say('harvest');
+            creep.say('withdraw');
         }
         if(!creep.memory.working && creep.carry.energy == creep.carryCapacity) {
             creep.memory.working = true;
@@ -22,8 +17,12 @@ var roleHealer = {
             findAndHeal(creep, 0.7);
         }
         else {
-            if(creep.harvest(Game.getObjectById(creep.memory.sourceId)) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(Game.getObjectById(creep.memory.sourceId), {visualizePathStyle: {stroke: '#ffaa00'}});
+            if (creep.withdrawFromContainer() == ERR_NOT_FOUND){
+                if (creep.carry.energy > 0){
+                    creep.memory.working = true;
+                } else {
+                    creep.moveTo(Game.flags.Flag2, {visualizePathStyle: {stroke: '#1313f7'}});
+                }
             }
         }
     }

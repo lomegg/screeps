@@ -1,14 +1,8 @@
 var roleChanger = require('script.roleChanger').selectRole;
-var sourceSelect = require('script.sourceSelector');
 var roleRepairer = {
 
     /** @param {Creep} creep **/
     run: function(creep) {
-
-        // set favorite source
-        if (!creep.memory.sourceId){
-            sourceSelect(creep);
-        }
 
         // deal with side job
         if (creep.memory.role != creep.memory.currentRole){
@@ -26,7 +20,7 @@ var roleRepairer = {
 
         if(creep.memory.repairing && creep.carry.energy == 0) {
             creep.memory.repairing = false;
-            creep.say('harvest');
+            creep.say('withdraw');
         }
         if(!creep.memory.repairing && creep.carry.energy == creep.carryCapacity) {
             creep.memory.repairing = true;
@@ -46,8 +40,12 @@ var roleRepairer = {
             }
         }
         else {
-            if(creep.harvest(Game.getObjectById(creep.memory.sourceId)) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(Game.getObjectById(creep.memory.sourceId), {visualizePathStyle: {stroke: '#ffaa00'}});
+            if (creep.withdrawFromContainer() == ERR_NOT_FOUND){
+                if (creep.carry.energy > 0){
+                    creep.memory.repairing = true;
+                } else {
+                    creep.moveTo(Game.flags.Flag2, {visualizePathStyle: {stroke: '#1313f7'}});
+                }
             }
         }
     }
