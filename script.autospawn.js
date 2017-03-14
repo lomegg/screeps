@@ -50,36 +50,41 @@ module.exports = function(){
             }
         });
 
+        var nonEmptyContainers = Game.spawns.Spawn1.room.find(FIND_STRUCTURES, {
+            filter: (structure) => {
+                return (structure.structureType == STRUCTURE_CONTAINER ) &&
+                    structure.store[RESOURCE_ENERGY] > 0;
+            }
+        }).length;
+
         for (let type of ['healer', 'harvester', 'upgrader', 'builder', 'bigHarvester'] ){
             var creepType = sortedCreeps[type + 's'];
             if (creepType.qty < creepType.targetQty) {
 
                 if (energyAvailable >= creepType.cost){
 
-                    //console.log('Attempting to create', _.capitalize(type) + (creepType.qty + 1), 'with cost', creepType.cost, 'and total energy', energyAvailable);
+                    // create only harvesters when containers are empty
+                    if ((type == 'harvester') || (type == 'bigHarvester') || nonEmptyContainers > 0){
+                        var newName = mainSpawn.createCreep(creepType.parts, _.capitalize(type) + (creepType.qty + 1) , {role: type, currentRole: type});
 
-                    var newName = mainSpawn.createCreep(creepType.parts, _.capitalize(type) + (creepType.qty + 1) , {role: type, currentRole: type});
-                    if (newName == ERR_NOT_ENOUGH_ENERGY){
-                        //console.log('Not enough energy to spawn:', energyAvailable);
-                    } else if (newName == ERR_NAME_EXISTS){
-                        // looping to find & replace dead creep in the middle of chain
-                        //console.log('Seems that', _.capitalize(type) + (creepType.qty + 1), 'already exist!');
-                        for (let i = 1; i <= creepType.qty; i ++){
-                            //console.log('Checking for', _.capitalize(type) + i);
-                            if (!Game.creeps[_.capitalize(type) + i]){
-                                //console.log('No', _.capitalize(type) + i,', creating...');
-                                return newName =mainSpawn.createCreep(creepType.parts, _.capitalize(type) + i , {role: type, currentRole: type});
+                        if (newName == ERR_NOT_ENOUGH_ENERGY){
+                            //console.log('Not enough energy to spawn:', energyAvailable);
+                        } else if (newName == ERR_NAME_EXISTS){
+
+                            // looping to find & replace dead creep in the middle of chain
+                            for (let i = 1; i <= creepType.qty; i ++){
+                                if (!Game.creeps[_.capitalize(type) + i]){
+                                    return newName = mainSpawn.createCreep(creepType.parts, _.capitalize(type) + i , {role: type, currentRole: type});
+                                }
                             }
                         }
-                    } else {
-                        //console.log('Spawning new', type, ': ' + newName);
+                        break;
                     }
-
-                    break;
-                } else {
-                    //console.log(_.capitalize(type), 'required(' + creepType.qty + ' of ' + creepType.targetQty + ') but only', energyAvailable, 'of ' + creepType.cost + ' present');
                 }
             }
         }
+        return ERR_FULL;
+    } else {
+        return ERR_BUSY;
     }
 };
