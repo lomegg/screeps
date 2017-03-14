@@ -19,11 +19,6 @@ module.exports.loop = function () {
         }
     }
 
-    var tower = Game.getObjectById('6d5765b2c59ab3c616cdae8c');
-    if(tower) {
-        roleTower.run(tower);
-    }
-
     for(let name in Game.creeps) {
         var creep = Game.creeps[name];
         switch (creep.memory.currentRole){
