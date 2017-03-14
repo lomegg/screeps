@@ -1,4 +1,21 @@
 /**
+ * Switch to another source if creep is being ifle for a while
+ * @return {Object} Storage
+ */
+
+Creep.prototype.cycleSources = function(){
+    if (!this.memory.cycleCounter){
+        this.memory.cycleCounter = 1;
+    } else if (this.memory.cycleCounter < 4){
+        this.memory.cycleCounter += 1;
+        this.say(this.memory.cycleCounter.toString());
+    } else {
+        this.memory.cycleCounter = 0;
+        this.selectSource();
+    }
+};
+
+/**
  * Find optimal target for storage
  * @return {Object} Storage
  */
@@ -24,7 +41,6 @@ Creep.prototype.findStorageTarget = function(){
     }
     return target;
 };
-
 
 /**
  * Check if creep has memorized target, check if it's full and update if needed
@@ -53,6 +69,23 @@ Creep.prototype.getStorageTarget = function(){
 
     return storageTarget;
 };
+
+
+/**
+ * Find container with energy that's up for grabs
+ * @return {Object} Storage
+ */
+
+Creep.prototype.nearestEnergyContainer = function(){
+
+    return this.pos.findClosestByPath(FIND_STRUCTURES, {
+        filter: (structure) => {
+            return (structure.structureType == STRUCTURE_CONTAINER ) &&
+                structure.store[RESOURCE_ENERGY] > 50;
+        }
+    });
+};
+
 
 /*
 * Select source based on range and capacity
@@ -126,13 +159,38 @@ Creep.prototype.storeEnergy = function(){
             var transfer = this.transfer(target, RESOURCE_ENERGY);
 
             if(transfer == ERR_NOT_IN_RANGE) {
-                return this.moveTo(target, {visualizePathStyle: {stroke: '#ffe601'}});
-            } else {
-                this.memory.unloading = this.carry.energy > 0;
-                return this.memory.unloading;
-            }
+                this.moveTo(target, {visualizePathStyle: {stroke: '#ffe601'}});
 
+            } else {
+                if (transfer == OK && this.carry.energy == 0){
+                    this.cycleSources();
+                }
+                this.memory.unloading = this.carry.energy > 0;
+            }
+            return transfer;
         } else {
             console.log('No target found! Harvester', this.name, 'target', target);
+            this.cycleSources();
+            return ERR_INVALID_TARGET;
         }
+};
+
+
+/**
+ * Withdraw energy from a container
+ */
+Creep.prototype.withdrawFromContainer = function(){
+    var container = this.nearestEnergyContainer();
+    if (container){
+        if(this.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            this.moveTo(container);
+            return ERR_NOT_IN_RANGE;
+        } else {
+            return OK;
+        }
+
+    } else {
+        return ERR_NOT_FOUND;
+    }
+
 };
