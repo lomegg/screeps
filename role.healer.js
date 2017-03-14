@@ -4,26 +4,13 @@ var roleHealer = {
     run: function(creep) {
 
 
-        if(creep.memory.working && creep.carry.energy == 0) {
-            creep.memory.working = false;
-            creep.say('withdraw');
-        }
-        if(!creep.memory.working && creep.carry.energy == creep.carryCapacity) {
-            creep.memory.working = true;
-            creep.say('heal');
-        }
+       creep.setStatus();
 
         if(creep.memory.working) {
             findAndHeal(creep, 0.7);
         }
         else {
-            if (creep.withdrawFromContainer() == ERR_NOT_FOUND){
-                if (creep.carry.energy > 0){
-                    creep.memory.working = true;
-                } else {
-                    creep.moveTo(Game.flags.Flag2, {visualizePathStyle: {stroke: '#1313f7'}});
-                }
-            }
+            creep.witdrawOrMoveToFlag('Healers');
         }
     }
 };
@@ -31,7 +18,7 @@ var roleHealer = {
 function findAndHeal(creep, hitLevel){
     //console.log(creep.name, 'looking for someone with health lower than', hitLevel);
 
-    if (hitLevel > 1) {hitLevel = 1};
+    if (hitLevel > 1) {hitLevel = 1}
 
     var targets = creep.room.find( FIND_MY_CREEPS, { filter: creep => creep.hits < (creep.hitsMax*hitLevel)});
     if (targets.length){

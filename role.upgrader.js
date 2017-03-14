@@ -7,14 +7,7 @@ var roleUpgrader = {
         // deal with side job
         creep.checkSideJob();
 
-        if(creep.memory.working && creep.carry.energy == 0) {
-            creep.memory.working = false;
-            creep.say('withdraw');
-        }
-        if(!creep.memory.working && creep.carry.energy == creep.carryCapacity) {
-            creep.memory.working = true;
-            creep.say('⚡ upgrade');
-        }
+        creep.setStatus();
 
         if(creep.memory.working) {
             if(creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
@@ -22,15 +15,8 @@ var roleUpgrader = {
             }
         }
         else {
-            if (creep.withdrawFromContainer() == ERR_NOT_FOUND){
-                if (creep.carry.energy > 0){
-                    creep.memory.working = true;
-                } else {
-                    if (roleChanger(creep) == ERR_FULL){
-                        creep.moveTo(Game.flags.Flag1, {visualizePathStyle: {stroke: '#1313f7'}});
-                    }
-                }
-            }
+
+            creep.witdrawOrMoveToFlag('Upgraders');
         }
     }
 };

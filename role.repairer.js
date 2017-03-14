@@ -8,14 +8,7 @@ var roleRepairer = {
         creep.checkSideJob();
 
 
-        if(creep.memory.working && creep.carry.energy == 0) {
-            creep.memory.working = false;
-            creep.say('withdraw');
-        }
-        if(!creep.memory.working && creep.carry.energy == creep.carryCapacity) {
-            creep.memory.working = true;
-            creep.say('repair');
-        }
+        creep.setStatus();
 
         if(creep.memory.working) {
             var targets = creep.room.find(FIND_STRUCTURES, {
@@ -30,13 +23,7 @@ var roleRepairer = {
             }
         }
         else {
-            if (creep.withdrawFromContainer() == ERR_NOT_FOUND){
-                if (creep.carry.energy > 0){
-                    creep.memory.working = true;
-                } else {
-                    creep.moveTo(Game.flags.Flag2, {visualizePathStyle: {stroke: '#1313f7'}});
-                }
-            }
+            creep.witdrawOrMoveToFlag('Builders');
         }
     }
 };
