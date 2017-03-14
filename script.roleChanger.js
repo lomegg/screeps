@@ -20,7 +20,6 @@ var selectRole = function(creep){
             } else {setDefaultRole(creep);}
             break;
         case 'upgrader':
-            creep.memory.upgrading = false;
             if (!upgradersNeeded()){
                 if (buildersNeeded(creep.room)){
                     setRole(creep, 'builder');
@@ -32,7 +31,6 @@ var selectRole = function(creep){
             } else {setDefaultRole(creep);}
             break;
         case 'builder':
-            creep.memory.building = false;
             if (!buildersNeeded(creep.room)){
                 if (repairersNeeded(creep.room)){
                     setRole(creep, 'repairer');
@@ -62,7 +60,7 @@ var repairersNeeded = function(room){
 };
 
 var upgradersNeeded = function(){
-    return _.filter(Game.creeps, (creep) => creep.memory.currentRole == 'upgrader').length < 10;
+    return _.filter(Game.creeps, (creep) => creep.memory.currentRole == 'upgrader').length < 6;
 };
 
 var harvestersNeeded = function(room){
@@ -70,22 +68,30 @@ var harvestersNeeded = function(room){
         filter: (structure) => {
             return (structure.structureType == STRUCTURE_EXTENSION ||
                 structure.structureType == STRUCTURE_SPAWN ||
-                structure.structureType == STRUCTURE_TOWER ||
-                structure.structureType == STRUCTURE_CONTAINER
-                ) &&
+                structure.structureType == STRUCTURE_TOWER) &&
                 structure.energy < structure.energyCapacity;
         }
     }).length;
 };
 
 var setDefaultRole = function(creep){
-    creep.say(creep.memory.currentRole.charAt(0) + ' ⥹ ' + creep.memory.role.charAt(0));
-    creep.memory.currentRole = creep.memory.role;
+    if (creep.currentRole == creep.role){
+        return ERR_FULL;
+    } else {
+        creep.say(creep.memory.currentRole.charAt(0) + ' ⥹ ' + creep.memory.role.charAt(0));
+        creep.memory.currentRole = creep.memory.role;
+        return OK;
+    }
 };
 
 var setRole = function(creep, role){
-    creep.say(creep.memory.role.charAt(0) + ' → ' + role.charAt(0));
-    creep.memory.currentRole = role;
+    if (creep.currentRole == creep.role){
+        return ERR_FULL;
+    } else {
+        creep.say(creep.memory.role.charAt(0) + ' → ' + role.charAt(0));
+        creep.memory.currentRole = role;
+        return OK;
+    }
 };
 
 module.exports.selectRole = selectRole;
