@@ -17,7 +17,6 @@ Creep.prototype.checkSideJob = function(){
 };
 
 
-
 /**
  * Switch to another source if creep is being ifle for a while
  * @return {Object} Storage
@@ -34,6 +33,29 @@ Creep.prototype.cycleSources = function(){
         this.selectSource();
     }
 };
+
+
+/**
+ * Find dropped energy and pick it up
+ * @return {Object} Storage
+ */
+
+Creep.prototype.findDroppedEnergy = function(){
+
+    var energy = this.pos.findClosestByPath(FIND_DROPPED_ENERGY);
+
+    if (energy) {
+        if (this.pickup(energy) == ERR_NOT_IN_RANGE){
+            this.moveTo(energy);
+            return ERR_NOT_IN_RANGE;
+        } else {
+            return OK;
+        }
+    } else {
+        return ERR_NOT_FOUND;
+    }
+};
+
 
 /**
  * Find optimal target for storage
@@ -170,6 +192,21 @@ Creep.prototype.setSource = function(sourceId){
    return OK;
 };
 
+/*
+ * Set status for creep based on carried energy
+ * @return {Int} response
+ * */
+Creep.prototype.setStatus = function(){
+    if(this.memory.working && this.carry.energy == 0) {
+        this.memory.working = false;
+        this.say('withdraw');
+    }
+    if(!this.memory.working && this.carry.energy == this.carryCapacity) {
+        this.memory.working = true;
+        this.say('work');
+    }
+    return OK;
+};
 
 /**
  * Store the energy into the target storage
@@ -215,5 +252,32 @@ Creep.prototype.withdrawFromContainer = function(){
 
     } else {
         return ERR_NOT_FOUND;
+    }
+};
+
+
+/*
+ * Witdraw from nearest container or go rest at flag
+ * @param {String} flag - flag name
+ * @return {Int} response
+ * */
+Creep.prototype.witdrawOrMoveToFlag = function(flag){
+    if (this.withdrawFromContainer() == ERR_NOT_FOUND){
+        if (this.carry.energy > 0){
+            this.memory.working = true;
+            return ERR_NOT_FOUND;
+        } else {
+            if (this.findDroppedEnergy() == ERR_NOT_FOUND){
+                if (flag){
+                    return this.moveTo(Game.flags[flag], {visualizePathStyle: {stroke: '#1313f7'}});
+                } else {
+                    return ERR_INVALID_ARGS;
+                }
+            } else {
+                return OK;
+            }
+        }
+    } else {
+        return OK;
     }
 };
