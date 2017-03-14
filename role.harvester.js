@@ -28,6 +28,7 @@ var roleHarvester = {
             var harvest_result = creep.harvest(Game.getObjectById(creep.memory.sourceId));
 
             if(harvest_result == ERR_NOT_IN_RANGE) {
+                creep.cycleSources();
                 creep.moveTo(Game.getObjectById(creep.memory.sourceId), {visualizePathStyle: {stroke: '#ffaa00'}});
             } else if (harvest_result == ERR_NOT_ENOUGH_RESOURCES){
                 if (creep.carry.energy > 0){
