@@ -6,9 +6,9 @@
 Creep.prototype.cycleSources = function(){
     if (!this.memory.cycleCounter){
         this.memory.cycleCounter = 1;
-    } else if (this.memory.cycleCounter < 4){
+    } else if (this.memory.cycleCounter < 8){
         this.memory.cycleCounter += 1;
-        this.say(this.memory.cycleCounter.toString());
+        //this.say(this.memory.cycleCounter.toString());
     } else {
         this.memory.cycleCounter = 0;
         this.selectSource();
@@ -81,7 +81,7 @@ Creep.prototype.nearestEnergyContainer = function(){
     return this.pos.findClosestByPath(FIND_STRUCTURES, {
         filter: (structure) => {
             return (structure.structureType == STRUCTURE_CONTAINER ) &&
-                structure.store[RESOURCE_ENERGY] > 50;
+                structure.store[RESOURCE_ENERGY] > 0;
         }
     });
 };
@@ -98,7 +98,7 @@ Creep.prototype.selectSource = function(){
     var creep = this;
     var sources = spawn.room.find(FIND_SOURCES,{
             filter: (structure) => {
-                return (structure.energy > structure.energyCapacity*0.05);
+                return (structure.energy > structure.energyCapacity*0.01);
             }
     });
 
@@ -112,9 +112,6 @@ Creep.prototype.selectSource = function(){
 
         // find out how much creeps using which spot
         _.forEach(sources, function(source, index){
-            //console.log('spot', source, 'index', index);
-
-            console.log(creep, creep.name);
 
             sourcesMap[index] = {
                 source: source,
@@ -123,16 +120,16 @@ Creep.prototype.selectSource = function(){
                 distance: creep.pos.findPathTo(source).length
             };
 
-            console.log('users', sourcesMap[index].users, 'distance', sourcesMap[index].distance, 'spots', sourcesMap[index].spots);
+            //console.log('users', sourcesMap[index].users, 'distance', sourcesMap[index].distance, 'spots', sourcesMap[index].spots);
 
             sourcesMap[index].rating = sourcesMap[index].users * -10 -sourcesMap[index].distance + sourcesMap[index].spots * 10;
-            console.log ('Rating for Source ' + sourcesMap[index].source.id + ' is ' + sourcesMap[index].rating);
+            //console.log ('Rating for Source ' + sourcesMap[index].source.id + ' is ' + sourcesMap[index].rating);
         });
 
 
         var sorted = sourcesMap.sort(function(a,b) {return (a.rating < b.rating) ? 1 : ((b.rating < a.rating) ? -1 : 0);} );
 
-        console.log ('Target source:', sorted[0].source.id);
+        //console.log ('Target source:', sorted[0].source.id);
 
         creep.say('new src');
         creep.setSource(sorted[0].source.id);
