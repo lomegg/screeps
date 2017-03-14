@@ -89,6 +89,7 @@ Creep.prototype.nearestEnergyContainer = function(){
 
 /*
 * Select source based on range and capacity
+* @return {Int} response
 * */
 Creep.prototype.selectSource = function(){
 
@@ -104,6 +105,7 @@ Creep.prototype.selectSource = function(){
 
     if (sources.length == 1){
         this.setSource(sources[0].id);
+        return OK;
     } else if (sources.length > 1){
 
 
@@ -133,20 +135,25 @@ Creep.prototype.selectSource = function(){
 
         creep.say('new src');
         creep.setSource(sorted[0].source.id);
+        return OK;
     }
 
 };
 
 /*
  * Set source for creep
+ * @param {String} sourceId - Game Id of source
+ * @return {Integer} response
  * */
 Creep.prototype.setSource = function(sourceId){
    this.memory.sourceId = sourceId;
+   return OK;
 };
 
 
 /**
  * Store the energy into the target storage
+ * @return {Integer} response
  */
 Creep.prototype.storeEnergy = function(){
         var target = this.findStorageTarget();
@@ -156,25 +163,25 @@ Creep.prototype.storeEnergy = function(){
             var transfer = this.transfer(target, RESOURCE_ENERGY);
 
             if(transfer == ERR_NOT_IN_RANGE) {
-                this.moveTo(target, {visualizePathStyle: {stroke: '#ffe601'}});
-
+                return this.moveTo(target, {visualizePathStyle: {stroke: '#ffe601'}});
             } else {
                 if (transfer == OK && this.carry.energy == 0){
                     this.cycleSources();
                 }
                 this.memory.unloading = this.carry.energy > 0;
+                return transfer;
             }
-            return transfer;
         } else {
             console.log('No target found! Harvester', this.name, 'target', target);
             this.cycleSources();
-            return ERR_INVALID_TARGET;
+            return ERR_NOT_FOUND;
         }
 };
 
 
 /**
  * Withdraw energy from a container
+ * @return {Integer} response
  */
 Creep.prototype.withdrawFromContainer = function(){
     var container = this.nearestEnergyContainer();
@@ -189,5 +196,4 @@ Creep.prototype.withdrawFromContainer = function(){
     } else {
         return ERR_NOT_FOUND;
     }
-
 };
