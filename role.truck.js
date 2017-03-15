@@ -27,7 +27,10 @@ var roleTruck = {
                         creep.moveToFlag('Trucks');
                     }
                 } else {
-                    creep.moveToFlag('Trucks');
+                    creep.memory.working = false;
+                    if (creep.findDroppedEnergy() == ERR_NOT_FOUND){
+                        creep.moveToFlag('Trucks');
+                    }
                 }
             }
         }
