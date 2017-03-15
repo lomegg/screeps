@@ -6,6 +6,8 @@
 // select role for the creep based on his true role (i.e. abilities) and current needs
 var selectRole = function(creep){
 
+    //console.log('changing role for', creep.name);
+
     switch (creep.memory.role){
         case "harvester" :
         case "bigHarvester" :
@@ -60,7 +62,7 @@ var repairersNeeded = function(room){
 };
 
 var upgradersNeeded = function(){
-    return _.filter(Game.creeps, (creep) => creep.memory.currentRole == 'upgrader').length < 6;
+    return _.filter(Game.creeps, (creep) => creep.memory.currentRole == 'upgrader').length < 10;
 };
 
 var harvestersNeeded = function(room){
@@ -75,7 +77,8 @@ var harvestersNeeded = function(room){
 };
 
 var setDefaultRole = function(creep){
-    if (creep.currentRole == creep.role){
+    //console.log('setting', creep, ' to default role');
+    if (creep.memory.currentRole == creep.role){
         return ERR_FULL;
     } else {
         creep.say(creep.memory.currentRole.charAt(0) + ' ⥹ ' + creep.memory.role.charAt(0));
@@ -85,7 +88,8 @@ var setDefaultRole = function(creep){
 };
 
 var setRole = function(creep, role){
-    if (creep.currentRole == creep.role){
+    //console.log('setting', creep, ' to role', role);
+    if (creep.memory.currentRole == creep.role){
         return ERR_FULL;
     } else {
         creep.say(creep.memory.role.charAt(0) + ' → ' + role.charAt(0));
@@ -94,4 +98,28 @@ var setRole = function(creep, role){
     }
 };
 
+
+
+/*
+ * Check if creep is doing someone else's job and stop it on counter
+ * @return {Int} response
+ * */
+
+var checkSideJob = function(creep){
+    //console.log('side job counter for', creep.name, 'is', creep.memory.sideJobCounter, 'current Role:', creep.memory.currentRole);
+
+    if (creep.memory.role != creep.memory.currentRole){
+        if (_.isUndefined(creep.memory.sideJobCounter)){
+            creep.memory.sideJobCounter = 0;
+            //console.log (creep.name, 'creep.memory.sideJobCounter set as', creep.memory.sideJobCounter);
+        } else if (creep.memory.sideJobCounter < 20){
+            creep.memory.sideJobCounter += 1;
+        } else if (creep.carry.energy == 0){
+            creep.memory.sideJobCounter = 0;
+            roleChanger(creep);
+        }
+    } else {return OK;}
+};
+
 module.exports.selectRole = selectRole;
+module.exports.checkSideJob = checkSideJob;
