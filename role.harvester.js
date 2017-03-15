@@ -1,4 +1,4 @@
-var roleChanger = require('script.roleChanger').selectRole;
+var roleChanger = require('script.roleChanger');
 var roleHarvester = {
 
     /** @param {Creep} creep **/
@@ -11,7 +11,7 @@ var roleHarvester = {
         }
 
         // deal with side job
-        creep.checkSideJob();
+        //roleChanger.checkSideJob(creep);
 
         if(creep.carry.energy < creep.carryCapacity && !creep.memory.unloading) {
 
@@ -35,7 +35,7 @@ var roleHarvester = {
             // unload
             var storageResult = creep.storeEnergy();
             if (typeof storageResult == 'undefined'){
-                roleChanger(creep);
+                //roleChanger.selectRole(creep);
             }
         } else {
             creep.memory.unloading = false;

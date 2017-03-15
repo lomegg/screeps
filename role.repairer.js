@@ -1,11 +1,11 @@
-var roleChanger = require('script.roleChanger').selectRole;
+var roleChanger = require('script.roleChanger');
 var roleRepairer = {
 
     /** @param {Creep} creep **/
     run: function(creep) {
 
         // deal with side job
-        creep.checkSideJob();
+        roleChanger.checkSideJob(creep);
 
 
         creep.setStatus();
@@ -19,7 +19,7 @@ var roleRepairer = {
                     creep.moveTo(targets[0], {visualizePathStyle: {stroke: '#ffffff'}});
                 }
             } else {
-                roleChanger(creep);
+                roleChanger.selectRole(creep);
             }
         }
         else {

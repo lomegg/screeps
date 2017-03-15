@@ -1,11 +1,11 @@
-var roleChanger = require('script.roleChanger').selectRole;
+var roleChanger = require('script.roleChanger');
 var roleUpgrader = {
 
     /** @param {Creep} creep **/
     run: function(creep) {
 
         // deal with side job
-        creep.checkSideJob();
+        //roleChanger.checkSideJob(creep);
 
         creep.setStatus();
 

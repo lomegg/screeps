@@ -1,29 +1,39 @@
-var roleChanger = require('script.roleChanger').selectRole;
+var roleChanger = require('script.roleChanger');
 var roleBuilder = {
 
     /** @param {Creep} creep **/
     run: function(creep) {
 
-
         // deal with side job
-        creep.checkSideJob();
+        roleChanger.checkSideJob(creep);
 
 
         creep.setStatus();
 
+        var targets = creep.room.find(FIND_CONSTRUCTION_SITES);
         if(creep.memory.working) {
-            var targets = creep.room.find(FIND_CONSTRUCTION_SITES);
             if(targets.length) {
                 if(creep.build(targets[0]) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(targets[0], {visualizePathStyle: {stroke: '#ffffff'}});
                 }
             } else {
-                creep.memory.working = false;
-                roleChanger(creep);
+                if (creep.carry.energy > 0){
+                    creep.storeEnergy();
+                } else {
+                    creep.memory.working = false;
+                }
+                roleChanger.selectRole(creep);
             }
         }
         else {
-            creep.witdrawOrMoveToFlag('Builders');
+            if (targets.length){
+                creep.witdrawOrMoveToFlag('Builders');
+            } else {
+                creep.moveToFlag('Builders');
+                roleChanger.selectRole(creep);
+            }
+
+
         }
     }
 };
