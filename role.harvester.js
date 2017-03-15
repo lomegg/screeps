@@ -27,6 +27,7 @@ var roleHarvester = {
                     creep.say('drop rest');
                     creep.storeEnergy(creep.findStorageTargetContainer());
                 } else {
+                    creep.moveToFlag('Harvesters');
                     creep.cycleSources();
                 }
             }
