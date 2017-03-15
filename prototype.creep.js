@@ -46,37 +46,75 @@ Creep.prototype.findDroppedEnergy = function(){
 Creep.prototype.findStorageTarget = function(){
 
     // try spawn / ext
-    var target = this.pos.findClosestByPath(FIND_MY_STRUCTURES, {
-        filter: (structure) => {
-            return (structure.structureType == STRUCTURE_EXTENSION ||
-                structure.structureType == STRUCTURE_SPAWN
-                    //|| structure.structureType == STRUCTURE_TOWER
-                ) &&
-                structure.energy < structure.energyCapacity;
-        }
-    });
+    var target = this.findStorageTargetSpawn();
 
     // try semi-filled or less tower
     if (!target){
-        target = this.pos.findClosestByPath(FIND_MY_STRUCTURES, {
-            filter: (structure) => {
-                return structure.structureType == STRUCTURE_TOWER &&
-                    structure.energy < structure.energyCapacity*0.5;
-            }
-        });
+        target = this.findStorageTargetTower();
     }
 
     // go for container
     if(!target){
-        target = this.pos.findClosestByPath(FIND_STRUCTURES, {
-            filter: (structure) => {
-                return (structure.structureType == STRUCTURE_CONTAINER ) &&
-                    _.sum(structure.store) < structure.storeCapacity;
-            }
-        });
+        target = this.findStorageTargetContainer();
     }
     return target;
 };
+
+
+
+
+/**
+ * Find optimal container for storage
+ * @return {Object} Storage
+ */
+
+Creep.prototype.findStorageTargetContainer = function(){
+
+    return this.pos.findClosestByPath(FIND_STRUCTURES, {
+        filter: (structure) => {
+            return (structure.structureType == STRUCTURE_CONTAINER ) &&
+                _.sum(structure.store) < structure.storeCapacity;
+        }
+    });
+};
+
+
+
+
+/**
+ * Find optimal spawn/extension for storage
+ * @return {Object} Storage
+ */
+
+Creep.prototype.findStorageTargetSpawn = function(){
+
+    return this.pos.findClosestByPath(FIND_MY_STRUCTURES, {
+        filter: (structure) => {
+            return (structure.structureType == STRUCTURE_EXTENSION ||
+                structure.structureType == STRUCTURE_SPAWN) &&
+                structure.energy < structure.energyCapacity;
+        }
+    });
+};
+
+
+
+/**
+ * Find optimal tower for storage
+ * @return {Object} Storage
+ */
+
+Creep.prototype.findStorageTargetTower = function(){
+
+    return this.pos.findClosestByPath(FIND_MY_STRUCTURES, {
+        filter: (structure) => {
+            return structure.structureType == STRUCTURE_TOWER &&
+                structure.energy < structure.energyCapacity*0.5;
+        }
+    });
+};
+
+
 
 /**
  * Check if creep has memorized target, check if it's full and update if needed
@@ -220,10 +258,11 @@ Creep.prototype.setStatus = function(){
 
 /**
  * Store the energy into the target storage
+ * @param {Object} target for storage
  * @return {Int} response
  */
-Creep.prototype.storeEnergy = function(){
-        var target = this.findStorageTarget();
+Creep.prototype.storeEnergy = function(target){
+        if (!target) {target = this.findStorageTarget();}
 
         if(target) {
 
