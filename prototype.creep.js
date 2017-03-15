@@ -27,7 +27,7 @@ Creep.prototype.findDroppedEnergy = function(){
 
     if (energy) {
         if (this.pickup(energy) == ERR_NOT_IN_RANGE){
-            this.moveTo(energy);
+            this.moveTo(energy, {visualizePathStyle: {stroke: '#ff6500'}});
             return ERR_NOT_IN_RANGE;
         } else {
             return OK;
@@ -252,7 +252,7 @@ Creep.prototype.setStatus = function(){
         this.memory.working = true;
         this.say('work');
     }
-    console.log(this.name, 'working: ',this.memory.working);
+    //console.log(this.name, 'working: ',this.memory.working);
     return OK;
 };
 
