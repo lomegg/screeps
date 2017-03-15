@@ -25,7 +25,7 @@ var roleHarvester = {
             } else if (harvest_result == ERR_NOT_ENOUGH_RESOURCES){
                 if (creep.carry.energy > 0){
                     creep.say('drop rest');
-                    creep.storeEnergy();
+                    creep.storeEnergy(creep.findStorageTargetContainer());
                 } else {
                     creep.cycleSources();
                 }
@@ -33,7 +33,10 @@ var roleHarvester = {
         }
         else if (creep.carry.energy > 0){
             // unload
-            var storageResult = creep.storeEnergy();
+
+
+
+            var storageResult = creep.storeEnergy(creep.findStorageTargetContainer());
             if (typeof storageResult == 'undefined'){
                 //roleChanger.selectRole(creep);
             }

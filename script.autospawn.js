@@ -35,6 +35,12 @@ module.exports = function(){
             targetQty: 0,
             parts: [WORK,HEAL,CARRY,MOVE],
             cost: 450
+        },
+        trucks: {
+            qty: creepsQty.trucks,
+            targetQty: 3,
+            parts: [CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE],
+            cost: 450
         }
     };
 
@@ -57,7 +63,7 @@ module.exports = function(){
             }
         }).length;
 
-        for (let type of ['healer', 'harvester', 'upgrader', 'builder', 'bigHarvester'] ){
+        for (let type of ['healer', 'harvester', 'upgrader', 'builder', 'bigHarvester', 'truck'] ){
             var creepType = sortedCreeps[type + 's'];
             if (creepType.qty < creepType.targetQty) {
 

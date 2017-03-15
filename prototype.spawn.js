@@ -11,7 +11,7 @@ StructureSpawn.prototype.creepsCount = function(roleType){
 
     var creeps = this.room.find(FIND_MY_CREEPS);
     var creepsCount = {};
-    for (let job of ['builder', 'harvester', 'bigHarvester', 'upgrader', 'repairer', 'healer']){
+    for (let job of ['builder', 'harvester', 'bigHarvester', 'upgrader', 'repairer', 'healer', 'truck']){
         creepsCount[job + 's'] = _.sum(creeps, (c) => c.memory[roleType] == job);
     }
     return creepsCount;

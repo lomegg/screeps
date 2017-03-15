@@ -6,6 +6,7 @@ var roleBuilder = require('role.builder');
 var roleRepairer = require('role.repairer');
 var roleHealer = require('role.healer');
 var roleTower = require('role.tower');
+var roleTruck = require('role.truck');
 var autospawn = require('script.autospawn');
 
 module.exports.loop = function () {
@@ -39,7 +40,9 @@ module.exports.loop = function () {
             case 'repairer':
                 roleRepairer.run(creep);
                 break;
-
+            case 'truck':
+                roleTruck.run(creep);
+                break;
             case 'harvester':
             case 'bigHarvester':
             default:
