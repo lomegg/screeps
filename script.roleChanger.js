@@ -116,7 +116,7 @@ var checkSideJob = function(creep){
             creep.memory.sideJobCounter += 1;
         } else if (creep.carry.energy == 0){
             creep.memory.sideJobCounter = 0;
-            roleChanger(creep);
+            selectRole(creep);
         }
     } else {return OK;}
 };

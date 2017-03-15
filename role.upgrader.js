@@ -5,7 +5,7 @@ var roleUpgrader = {
     run: function(creep) {
 
         // deal with side job
-        //roleChanger.checkSideJob(creep);
+        roleChanger.checkSideJob(creep);
 
         creep.setStatus();
 
