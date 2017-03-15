@@ -1,22 +1,3 @@
-/*
- * Check if creep is doing someone else's job and stop it on counter
- * @return {Int} response
- * */
-
-Creep.prototype.checkSideJob = function(){
-    if (this.memory.role != this.memory.currentRole){
-        if (typeof this.memory.sideJobCounter  == 'undefined' ){
-            this.memory.sideJobCounter = 0;
-        } else if (this.memory.sideJobCounter < 20){
-            this.memory.sideJobCounter += 1;
-        } else if (this.carry.energy == 0){
-            this.memory.sideJobCounter = 0;
-            roleChanger(this);
-        }
-    } else {return OK;}
-};
-
-
 /**
  * Switch to another source if creep is being ifle for a while
  * @return {Object} Storage
@@ -64,15 +45,28 @@ Creep.prototype.findDroppedEnergy = function(){
 
 Creep.prototype.findStorageTarget = function(){
 
+    // try spawn / ext
     var target = this.pos.findClosestByPath(FIND_MY_STRUCTURES, {
         filter: (structure) => {
             return (structure.structureType == STRUCTURE_EXTENSION ||
-                structure.structureType == STRUCTURE_SPAWN ||
-                structure.structureType == STRUCTURE_TOWER) &&
+                structure.structureType == STRUCTURE_SPAWN
+                    //|| structure.structureType == STRUCTURE_TOWER
+                ) &&
                 structure.energy < structure.energyCapacity;
         }
     });
 
+    // try semi-filled or less tower
+    if (!target){
+        target = this.pos.findClosestByPath(FIND_MY_STRUCTURES, {
+            filter: (structure) => {
+                return structure.structureType == STRUCTURE_TOWER &&
+                    structure.energy < structure.energyCapacity*0.5;
+            }
+        });
+    }
+
+    // go for container
     if(!target){
         target = this.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: (structure) => {
@@ -110,6 +104,21 @@ Creep.prototype.getStorageTarget = function(){
     }
 
     return storageTarget;
+};
+
+
+/*
+ * Move to flag if exists
+ * @param {String} flag - flag name
+ * @return {Int} response
+ * */
+
+Creep.prototype.moveToFlag = function(flag){
+    if (flag){
+        return this.moveTo(Game.flags[flag], {visualizePathStyle: {stroke: '#1313f7'}});
+    } else {
+        return ERR_INVALID_ARGS;
+    }
 };
 
 
@@ -205,6 +214,7 @@ Creep.prototype.setStatus = function(){
         this.memory.working = true;
         this.say('work');
     }
+    console.log(this.name, 'working: ',this.memory.working);
     return OK;
 };
 
@@ -268,11 +278,7 @@ Creep.prototype.witdrawOrMoveToFlag = function(flag){
             return ERR_NOT_FOUND;
         } else {
             if (this.findDroppedEnergy() == ERR_NOT_FOUND){
-                if (flag){
-                    return this.moveTo(Game.flags[flag], {visualizePathStyle: {stroke: '#1313f7'}});
-                } else {
-                    return ERR_INVALID_ARGS;
-                }
+                this.moveToFlag(flag);
             } else {
                 return OK;
             }
